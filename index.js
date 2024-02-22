@@ -4,6 +4,8 @@ const MongoStore = require("connect-mongo");
 const dotenv = require("dotenv");
 const methodOverride = require("method-override");
 const cors = require("cors");
+
+const path = require("path");
 //const ejs = require('ejs');
 const Vps = require("./models/VpsModel");
 const { connectToMongoDb } = require("./config/connect");
@@ -25,6 +27,7 @@ connectToMongoDb();
 
 /* static */
 app.use(express.static("public"));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 /* define middlewares */
 app.use(
@@ -72,12 +75,14 @@ setInterval(async () => {
         vps.vps_status = false;
         await vps.save();
         console.log(`VPS ${vps.ip} is now offline.`);
+        console.log(`Checking login status: ${vps.fblogin_status}`);
+        console.log(`FB Account Name: ${vps.fbaccount_name}`);
       }
     });
   } catch (error) {
     console.error(error);
   }
-}, 60000); // Check every minute
+}, process.env.FETCH_INTERVAL); // Check every minute
 
 /* start server */
 app.listen(process.env.PORT || 5000, function () {
