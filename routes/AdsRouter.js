@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 const verifyToken = require("../middlewares/VerifyToken");
 const AdsController = require("../controllers/AdsController");
@@ -14,7 +14,7 @@ let storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = uuidv4() + path.extname(file.originalname);
-    cb(null, file.fieldname + '-' + uniqueSuffix);
+    cb(null, file.fieldname + "-" + uniqueSuffix);
   },
 });
 
@@ -50,7 +50,12 @@ router
     upload.array("images", 10),
     AdsController.createAds
   )
-  .put("/:id", verifyToken,  upload.array("images", 10), AdsController.updateAds)
+  .post(
+    "/find",
+    AdsController.findAds
+  )
+  .put("/:id", verifyToken, upload.array("images", 10), AdsController.updateAds)
+  .put("/:id/post", verifyToken, AdsController.postAds)
   .delete("/:id", verifyToken, AdsController.deleteAds);
 
 module.exports = router;

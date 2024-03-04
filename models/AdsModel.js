@@ -9,6 +9,10 @@ const AdsSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  post_vps: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Vps",
+  },
   images: [
     {
       type: String,
@@ -18,7 +22,11 @@ const AdsSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Group",
   },
-  post_id: String,
+  posted: {
+    type: String,
+    enum: ["NEW", "PENDING", "FAILED", "SUCCESS"],
+    default: "NEW",
+  },
   created_at: {
     type: Date,
     default: Date.now,

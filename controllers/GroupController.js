@@ -62,6 +62,65 @@ module.exports.updateGroup = async (req, res) => {
   });
 };
 
+module.exports.checkGroup = async (req, res) => {
+  const currentGroup = await Group.findById(req.params.id);
+  if (!currentGroup) {
+    return res.status(404).json({
+      message: "Group not found",
+    });
+  }
+  await Group.updateOne({ _id: req.params.id }, req.body, (err) => {
+    if (err) {
+      return res.status(500).json({
+        error: err,
+      });
+    }
+    return res.status(200).json({
+      message: "Group updated successfully",
+    });
+  });
+};
+
+module.exports.assignGroup = async (req, res) => {
+  let currentGroup = await Group.findById(req.params.id);
+  if (!currentGroup) {
+    return res.status(404).json({
+      message: "Group not found",
+    });
+  }
+  currentGroup.ads.push(req.body.ad);
+  await Group.updateOne({ _id: req.params.id }, currentGroup, (err) => {
+    if (err) {
+      return res.status(500).json({
+        error: err,
+      });
+    }
+    return res.status(200).json({
+      message: "Advertise assigned successfully",
+    });
+  });
+};
+
+module.exports.removeAssignGroup = async (req, res) => {
+  let currentGroup = await Group.findById(req.params.id);
+  if (!currentGroup) {
+    return res.status(404).json({
+      message: "Group not found",
+    });
+  }
+  currentGroup.ads = currentGroup.ads.filter((ad) => ad !== req.body.ad);
+  await Group.updateOne({ _id: req.params.id }, currentGroup, (err) => {
+    if (err) {
+      return res.status(500).json({
+        error: err,
+      });
+    }
+    return res.status(200).json({
+      message: "Advertise removed successfully",
+    });
+  });
+};
+
 module.exports.deleteGroup = async (req, res) => {
   const currentGroup = await Group.findById(req.params.id);
   if (!currentGroup) {

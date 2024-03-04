@@ -20,16 +20,14 @@ const VpsSchema = new mongoose.Schema({
     trim: true,
   },
   fbaccount_name: String,
-  group_ids: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Group",
-    },
-  ],
   last_heartbeat: {
     type: Date,
     default: Date.now,
   },
+  posted_at: {
+    type: Date,
+    default: Date.now,
+  }
 });
 
 module.exports = mongoose.model("Vps", VpsSchema);

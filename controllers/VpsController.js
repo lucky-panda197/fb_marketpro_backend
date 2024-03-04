@@ -57,6 +57,31 @@ module.exports.updateVps = async (req, res) => {
   });
 };
 
+// module.exports.updateGroupVps = async (req, res) => {
+//   const currentVps = await Vps.findById(req.params.id);
+//   if (!currentVps) {
+//     return res.status(404).json({
+//       message: "Vps not found",
+//     });
+//   }
+
+//   const updatedVps = await Vps.findOneAndUpdate(
+//     { _id: req.params.id },
+//     req.body,
+//     { new: true } // Returns the updated document
+//   );
+
+//   // If no document was found and updated, updatedAd will be null
+//   if (!updatedVps) {
+//     return res.status(404).json({ message: "Ad not found" });
+//   }
+
+//   return res.status(200).json({
+//     message: "Vps updated successfully",
+//     vps: updatedVps,
+//   });
+// };
+
 module.exports.deleteVps = async (req, res) => {
   const currentVps = await Vps.findById(req.params.id);
   if (!currentVps) {
@@ -96,21 +121,21 @@ module.exports.updateVpsStatus = async (req, res) => {
   }
 };
 
-module.exports.updateFBStatus = async (req, res) => {
-  const currentVps = await Vps.findById(req.params.id);
-  if (!currentVps) {
-    return res.status(404).json({
-      message: "Vps not found",
-    });
-  }
-  await Vps.updateOne({ _id: req.params.id }, req.body, (err) => {
-    if (err) {
-      return res.status(500).json({
-        error: err,
-      });
-    }
-    return res.status(200).json({
-      message: "Vps updated successfully",
-    });
-  });
-};
+// module.exports.updateFBStatus = async (req, res) => {
+//   const currentVps = await Vps.findById(req.params.id);
+//   if (!currentVps) {
+//     return res.status(404).json({
+//       message: "Vps not found",
+//     });
+//   }
+//   await Vps.updateOne({ _id: req.params.id }, req.body, (err) => {
+//     if (err) {
+//       return res.status(500).json({
+//         error: err,
+//       });
+//     }
+//     return res.status(200).json({
+//       message: "Vps updated successfully",
+//     });
+//   });
+// };

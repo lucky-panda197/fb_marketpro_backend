@@ -13,6 +13,12 @@ const GroupSchema = new mongoose.Schema({
       ref: "Vps",
     },
   ],
+  ads: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Ads",
+    },
+  ],
   created_at: {
     type: Date,
     default: Date.now,
