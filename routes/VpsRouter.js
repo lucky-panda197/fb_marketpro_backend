@@ -12,7 +12,6 @@ router
   .post("/create", verifyToken, VpsController.createVps)
   .post("/update-vps-status", VpsController.updateVpsStatus)
   .put("/:id", verifyToken, VpsController.updateVps)
-  .put("/:id", verifyToken, VpsController.updateVps)
   .delete("/:id", verifyToken, VpsController.deleteVps);
 
 module.exports = router;
