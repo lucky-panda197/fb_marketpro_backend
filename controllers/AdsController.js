@@ -1,6 +1,5 @@
 const fs = require("fs").promises; // For using async/await
 const Ads = require("../models/AdsModel");
-const Vps = require("../models/VpsModel");
 
 module.exports.getAdss = async (req, res) => {
   const adss = await Ads.find({})
@@ -121,6 +120,29 @@ module.exports.updateAds = async (req, res) => {
   }
 };
 
+module.exports.updateAdsStatus = async (req, res) => {
+  var currentAds = await Ads.findById(req.params.id);
+  if (!currentAds) {
+    return res.status(404).json({
+      message: "Ads not found",
+    });
+  }
+
+  currentAds.posted = req.body.status === true ? "SUCCESS" : "FAILED";
+  // currentAds.post_vps = req.body.postVps;
+  // currentAds.comments = req.body.comments;
+  await Ads.updateOne({ _id: req.params.id }, currentAds, (err) => {
+    if (err) {
+      return res.status(500).json({
+        error: err,
+      });
+    }
+    return res.status(200).json({
+      message: "Ads updated successfully",
+    });
+  });
+};
+
 module.exports.postAds = async (req, res) => {
   var currentAds = await Ads.findById(req.params.id);
   if (!currentAds) {
@@ -132,6 +154,27 @@ module.exports.postAds = async (req, res) => {
   currentAds.posted = req.body.posted;
   currentAds.post_vps = req.body.postVps;
   // currentAds.comments = req.body.comments;
+  await Ads.updateOne({ _id: req.params.id }, currentAds, (err) => {
+    if (err) {
+      return res.status(500).json({
+        error: err,
+      });
+    }
+    return res.status(200).json({
+      message: "Ads updated successfully",
+    });
+  });
+};
+
+module.exports.repostAds = async (req, res) => {
+  var currentAds = await Ads.findById(req.params.id);
+  if (!currentAds) {
+    return res.status(404).json({
+      message: "Ads not found",
+    });
+  }
+
+  currentAds.repost = req.body.repost;
   await Ads.updateOne({ _id: req.params.id }, currentAds, (err) => {
     if (err) {
       return res.status(500).json({

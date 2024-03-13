@@ -24,7 +24,6 @@ module.exports.getVps = async (req, res) => {
 module.exports.createVps = (req, res) => {
   const newVps = new Vps({
     ...req.body,
-    author: req.userId,
   });
   newVps.save((err) => {
     if (err) {
@@ -102,19 +101,18 @@ module.exports.deleteVps = async (req, res) => {
 };
 
 module.exports.updateVpsStatus = async (req, res) => {
-  const { ip, loggedIn, fullName } = req.body;
-  console.log(ip, loggedIn, fullName);
+  const { ip, loggedIn } = req.body;
+  console.log(ip, loggedIn);
   try {
     let vps = await Vps.findOne({ ip: ip });
     if (vps) {
       vps.last_heartbeat = Date.now();
       vps.vps_status = true;
-      vps.fbaccount_name = fullName;
       vps.fblogin_status = loggedIn;
       await vps.save();
 
-      res.send("Heartbeat received and status updated");
-    } else res.send("This Ip is not registered!");
+      res.send({ message: "Heartbeat received and status updated" });
+    } else res.send({ message: "This Ip is not registered!" });
   } catch (error) {
     console.error(error);
     res.status(500).send("Server error");

@@ -12,7 +12,7 @@ const CommentSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["NEW", "DONE"],
+    enum: ["NEW", "SUCCESS", "FAILED"],
     default: "NEW",
   },
   created_at: {

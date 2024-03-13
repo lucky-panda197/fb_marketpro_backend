@@ -19,7 +19,7 @@ const VpsSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  fbaccount_name: String,
+  fbaccount_id: String,
   last_heartbeat: {
     type: Date,
     default: Date.now,

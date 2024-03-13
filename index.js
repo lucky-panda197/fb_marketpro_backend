@@ -5,29 +5,20 @@ const dotenv = require("dotenv");
 const methodOverride = require("method-override");
 const cors = require("cors");
 const path = require("path");
-//const ejs = require('ejs');
 const Vps = require("./models/VpsModel");
+const Ads = require("./models/AdsModel");
+const Comment = require("./models/CommentModel");
 const { connectToMongoDb } = require("./config/connect");
-//const PageRouter = require('./routes/PageRouter');
 const ApiRouter = require("./routes");
+const cron = require("node-cron");
 
-
-/* define consts */
 const app = express();
 dotenv.config();
-
-/* globals */
-//global.userIN = null;
-
-/* template Engine*/
-//app.set('view engine', 'ejs');
-
-/* connect to database */
 connectToMongoDb();
 
 /* static */
 app.use(express.static("public"));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 /* define middlewares */
 app.use(
@@ -50,19 +41,72 @@ app.use(
   })
 );
 
-/*
-app.use('*', (req, res, next) => {
-    userIN = req.session.userID;
-    next();
-});
-*/
-
 /* define routes */
 app.use("/api", ApiRouter);
 
 app.use("/", (req, res) => {
   res.send("Hi, welcome to my RESTFUL BlogAPI 😍");
 });
+
+cron.schedule(
+  "7 6 * * *",
+  async () => {
+    console.log("Running the database check/update at 6:00 PM Mountain Time");
+    await updateAdsStatusForRepost();
+    await updateCommentStatusForRepost();
+  },
+  {
+    scheduled: true,
+    timezone: "America/Denver", // For Mountain Time
+  }
+);
+
+async function updateAdsStatusForRepost() {
+  console.log("start updating ads");
+  try {
+    // Find and update all ads where repost is true, set their status to 'PENDING'
+    const result = await Ads.updateMany(
+      { repost: true },
+      { $set: { posted: "PENDING" } }
+    );
+
+    if (result.matchedCount === 0) {
+      console.log("No ads matching the criteria were found.");
+      return;
+    }
+
+    console.log("Ads updated successfully:", result);
+  } catch (err) {
+    console.error("Error updating ads:", err);
+  }
+}
+
+async function updateCommentStatusForRepost() {
+  console.log("start updating comments");
+  try {
+    const adsWithRepost = await Ads.find({ repost: true }).select("_id");
+    const adIds = adsWithRepost.map((ad) => ad._id);
+
+    if (adIds.length === 0) {
+      console.log("No Ads with repost=true found");
+      return;
+    }
+
+    const result = await Comment.updateMany(
+      { ads: { $in: adIds } },
+      { $set: { status: "NEW" } }
+    );
+
+    if (result.matchedCount === 0) {
+      console.log("No comments linked to the specified ads were found.");
+      return;
+    }
+
+    console.log("Comments updated successfully:", result);
+  } catch (err) {
+    console.error("Error updating comments:", err);
+  }
+}
 
 setInterval(async () => {
   const now = Date.now();

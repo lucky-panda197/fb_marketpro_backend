@@ -9,8 +9,9 @@ const CommentController = require("../controllers/CommentController");
 router
   .get("/", CommentController.getComments)
   .get("/:slug", CommentController.getComment)
+  .post("/find", CommentController.findComment)
   .post("/create", verifyToken, CommentController.createComment)
-  .post("/update-comment-status", CommentController.updateCommentStatus)
+  .post("/:id/update_status", CommentController.updateCommentStatus)
   .put("/:id", verifyToken, CommentController.updateComment)
   .delete("/:id", verifyToken, CommentController.deleteComment);
 

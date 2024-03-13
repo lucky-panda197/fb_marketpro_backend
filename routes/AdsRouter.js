@@ -54,8 +54,10 @@ router
     "/find",
     AdsController.findAds
   )
+  .post("/:id/update_status", AdsController.updateAdsStatus)
   .put("/:id", verifyToken, upload.array("images", 10), AdsController.updateAds)
   .put("/:id/post", verifyToken, AdsController.postAds)
+  .put("/:id/repost", verifyToken, AdsController.repostAds)
   .delete("/:id", verifyToken, AdsController.deleteAds);
 
 module.exports = router;

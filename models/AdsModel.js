@@ -27,6 +27,10 @@ const AdsSchema = new mongoose.Schema({
     enum: ["NEW", "PENDING", "FAILED", "SUCCESS"],
     default: "NEW",
   },
+  repost: {
+    type: Boolean,
+    default: false,
+  },
   created_at: {
     type: Date,
     default: Date.now,
